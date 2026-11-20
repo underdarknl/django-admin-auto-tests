@@ -8,11 +8,6 @@ import os
 import sys
 import uuid
 
-try: # for pip >= 10
-    from pip._internal.req import parse_requirements
-except ImportError: # for pip <= 9.0.3
-    from pip.req import parse_requirements
-
 ###############################
 #  Configuración del paquete  #
 ###############################
@@ -164,13 +159,8 @@ def find_package_data(where='.', package='',
 ##############################################################################
 
 # Lista de dependencias a instalar
-if os.path.exists(requirements_path):
-    requirements = parse_requirements(requirements_path, session=uuid.uuid1())
-    install_requires = [str(ir.req) for ir in requirements if not get_url(ir)]
-    dependency_links = [get_url(ir) for ir in requirements if get_url(ir)]
-else:
-    install_requires = []
-    dependency_links = []
+install_requires = []
+dependency_links = []
 
 # Todos los módulos y submódulos a instalar (module, module.submodule, module.submodule2...)
 packages = find_packages(__dir__)

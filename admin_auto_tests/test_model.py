@@ -31,7 +31,10 @@ class AdminTestMixIn(object):
         model = model or self.model
         field_values = field_values or self.field_values or {}
         # instance = self.create_factory(model)(**field_values)
-        instance = mommy.make(model, **field_values)
+        if commit:
+            instance = mommy.make(model, **field_values)
+        else:
+            instance = mommy.prepare(model, **field_values)
         return instance
 
     def create_factory(self, model=None):
@@ -80,7 +83,7 @@ class ModelAdminTestMixIn(AdminTestMixIn):
                       args=(instance.pk,))
 
     def create_instance_data(self):
-        instance = self.create()
+        instance = self.create(commit=False)
         return {x: y for x, y in filter(lambda x: x[1], model_to_dict(instance).items())
                 if not x in self.form_data_exclude_fields}
 
